@@ -1,0 +1,85 @@
+﻿<!doctype html>
+
+<html lang="en">
+
+<head>
+  <!--Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS 
+  <link rel="stylesheet" href="../css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  -->
+  <link rel="stylesheet" href="../css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/customize.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/util_sidebar.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="../components/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" crossorigin="anonymous">
+  <title>UTil-soft</title>
+
+  <style type="text/css">
+    a:link,
+    a:visited,
+    a:active {
+      color: black;
+    }
+
+    a:hover {
+      color: #007bff;
+      text-decoration: underline !important;
+    }
+  </style>
+
+</head>
+
+<body class="bg-light">
+
+  <!--loader-->
+  <div id="divLoader" class="w-100 h-100 text-center position-absolute bg-light d-none" style="z-index:999;">
+    <button class="btn btn-sm btn-warning mt-2">
+      <i class="fas fa-spinner fa-spin mr-2"></i>Loading...</button>
+  </div>
+
+
+  <div class="d-print-none border-bottom p-1 my-formhead">
+    <div class="container">
+      <h6 class="m-1 text-center text-white">Report Center</h6>
+    </div>
+  </div>
+
+  <!--report data-->
+  <div id="reportCenter" class="container col-xs-12 col-md-8 col-lg-6">
+
+  <!--
+    <div class="my-3 px-3 bg-white shadow-sm">
+      <h4 class="py-2 mx-2 mb-0">Financial Report</h4>
+      <div class="list-group list-group-flush mx-2">
+        <a href="#" class="list-group-item py-2 px-4">General Ledger</a>
+        <a href="#" class="list-group-item py-2 px-4">Trial Balance</a>
+        <a href="#" class="list-group-item py-2 px-4">Profit & Loss (1 Level)</a>
+        <a href="#" class="list-group-item py-2 px-4">Profit & Loss (1 Level)</a>
+        <a href="#" class="list-group-item py-2 px-4">Profit & Loss (1 Level)</a>
+      </div>
+    </div>
+	-->
+  </div>
+
+  <script type="text/javascript" src="../mycomponents/modal_reporttemplate.js"></script>
+  <script src="../js/jquery.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script defer src="../js/fontawesome.all.js"></script>
+  <script src="../js/moment.js"></script>
+
+  <script src="../components/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+  <script src="../myjs/util_dataset.js" type="text/javascript"></script>
+  <script src="../myjs/util_event.js" type="text/javascript"></script>
+  <!--<script src="../myjs/util_lib.js" type="text/javascript"></script>-->
+  <script src="../myjs/util_rep.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function () {      
+      jsObject.getReportCenter();
+    });
+  </script>
+</body>
+
+</html>

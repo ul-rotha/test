@@ -1,0 +1,222 @@
+﻿<!doctype html>
+
+<html lang="en">
+
+<head>
+    <!--Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/customize.css">
+
+    <style>
+    </style>
+</head>
+<body id="body">
+
+    <!--loader-->
+    <script type="text/javascript" src="../mycomponents/div_loader.js"></script>
+
+    <page size="A4" layout="landscape">
+        <div id="data" class="container col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex flex-column">
+            <table id="tblData" data-cols-width="10,15,10,10,25,10,10,15,10" class="display table table-sm small table-ellipsis">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </page>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script defer src="../js/fontawesome.all.js"></script>
+    <script src="../js/moment.js"></script>
+    <script src="../js/jquery-ui.js"></script>
+    <script src="../myjs/util_lib.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="../lib/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="../dist/xlsx_html_utils.min.js"></script>
+    <script type="text/javascript" src="../lib/FileSaver.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('body').on('click', 'tr.INV a.open-code', function () {
+                var code = $(this).text();
+                jsObject.open("sinv", code);
+            });
+
+            $('body').on('click', 'tr.DN a.open-code', function () {
+                var code = $(this).text();
+                jsObject.open("dn", code);
+            });
+
+            $('body').on('click', 'tr.CS a.open-code', function () {
+                var code = $(this).text();
+                jsObject.open("cs", code);
+            });
+
+            $('body').on('click', 'tr.CN a.open-code', function () {
+                var code = $(this).text();
+                jsObject.open("cn", code);
+            });
+
+            $('body').on('click', 'tr.datarow a.open-cus', function () {
+                var code = $(this).text();
+                jsObject.open("cus", code);
+            });
+
+
+        });
+
+        function CreateReport(data) {
+            var head = [];
+            var body = [];
+
+            var tmp = "",
+                colKey = "",
+                colValue = "",
+                flagText = "",
+                flag = "";
+
+            for (var i in data) {
+                flagText = data[i].flagText;
+                flag = data[i].flag;
+
+                switch (data[i].flag) {
+                    case "company":
+                        head.push("<tr><th data-f-bold='true' data-f-sz='12' data-f-name='Khmer Os System'" + data[i].html + " data-a-h='center' class='border-0 m-0 p-0'><h2 class='text-center'>" + flagText + "</h2></th></tr>");
+                        break;
+                    case "title":
+                        head.push("<tr><th data-f-bold='true' data-f-sz='12' data-f-name='Khmer Os System'" + data[i].html + " data-a-h='center' class='border-0 m-0 p-0'><h6 class='text-center' id='reportTitle'>" + flagText + "</h6></th></tr>");
+                        break;
+                    case "subtitle":
+                        head.push("<tr><th data-f-bold='true' data-f-sz='12' data-f-name='Khmer Os System'" + data[i].html + " data-a-h='center' class='border-0 m-0 p-0'><h6 class='text-center'>" + flagText + "</h6></th></tr>");
+                        break;
+                    case "nodata":
+                        body.push("<tr><td data-f-bold='true' data-f-sz='12' " + data[i].html + " data-a-h='center' class='border-0 m-0 p-0'><h6 class='text-center'>" + flagText + "</h6></td></tr>");
+                        break;
+                    case "head":
+                        tmp = "";
+                        var headerText = data[i].flagText.split(",");
+                        for (var l in Object.keys(data[i])) {
+                            colKey = Object.keys(data[i])[l];
+                            colValue = headerText[l];
+                            tmp += col("th", colKey, colValue);
+                        }
+                        head.push("<tr class='head'>" + tmp + "</tr>");
+                        break;
+                    case "group":
+                        body.push(
+                            "<tr class='font-weight-bold'>" +
+                            "<td data-a-v='center' colspan=100% class='text-left'>" + flagText + "</td>" +
+                            "</tr>");
+                        break;
+                    case "row":
+                        tmp = "";
+                        for (var l in Object.keys(data[i])) {
+                            colKey = Object.keys(data[i])[l];
+                            colValue = data[i][colKey];
+                            tmp += col("td", colKey, colValue);
+                        }                        
+                        body.push("<tr class='datarow " + data[i].html + "'>" + tmp + "</tr>");
+                        break;
+
+                    case "groupTotal":
+                        tmp = "";
+                        for (var l in Object.keys(data[i])) {
+                            colKey = Object.keys(data[i])[l];
+                            colValue = data[i][colKey];
+                            tmp += col("td", colKey, colValue);
+                        }
+                        body.push("<tr class='font-weight-bold bg-light'>" + tmp + "</tr>");
+                        break;
+                    case "grandTotal":
+                        tmp = "";
+                        for (var l in Object.keys(data[i])) {
+                            colKey = Object.keys(data[i])[l];
+                            colValue = data[i][colKey];
+                            tmp += col("td", colKey, colValue);
+                        }
+                        body.push("<tr class='font-weight-bold'>" + tmp + "</tr>");
+                        break;
+                }
+            }
+            $('#tblData thead').html(head.join(""));
+            $('#tblData tbody').html(body.join(""));
+
+            setTimeout(function () {
+                $("#divLoader").addClass('d-none');
+            }, 500);
+        }
+
+        function col(th_td, colName, colValue) {
+            var returnCol = "";
+            switch (colName) {
+                case "docNo":
+                    if (th_td == "th")
+                        returnCol = "<th data-a-v='center' data-fill-color='ffeaa7' data-f-name='Khmer Os System' data-f-sz='9' data-f-bold='true'>" + colValue + "</th>";
+                    else if (th_td == "td")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9'><a class='open open-code'>" + (colValue == null ? "" : colValue) + "</a></td>";
+                    else if (th_td == "td_x")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9' data-f-strike='true'><a class='open open-code'><del>" + (colValue == null ? "" : colValue) + "</del></a></td>";
+                    break;
+                case "customer":
+                    if (th_td == "th")
+                        returnCol = "<th data-a-v='center' data-fill-color='ffeaa7' data-f-name='Khmer Os System' data-f-sz='9' data-f-bold='true'>" + colValue + "</th>";
+                    else if (th_td == "td")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9'><a class='open open-cus'>" + (colValue == null ? "" : colValue) + "</a></td>";
+                    else if (th_td == "td_x")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9' data-f-strike='true'><a class='open open-cus'><del>" + (colValue == null ? "" : colValue) + "</del></a></td>";
+                    break;
+                case "location":
+                case "docRef":
+                case "customerName":
+                case "stockCode":
+                case "stockDesc":
+                    if (th_td == "th")
+                        returnCol = "<th data-a-v='center' data-fill-color='ffeaa7' data-f-name='Khmer Os System' data-f-sz='9' data-f-bold='true'>" + colValue + "</th>";
+                    else if (th_td == "td")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9'>" + (colValue == null ? "" : colValue) + "</td>";
+                    else if (th_td == "td_x")
+                        returnCol = "<td data-a-v='center' data-f-name='Khmer Os System' data-f-sz='9' data-f-strike='true'><del>" + (colValue == null ? "" : colValue) + "</del></td>";
+                    break;
+                case "docDate":
+                case "salesPerson":
+                case "margin":
+                case "markup":
+                case "uom":
+                case "discount":
+                    if (th_td == "th")
+                        returnCol = "<th data-a-v='center' data-a-h='center' class='text-center' data-fill-color='ffeaa7' data-f-name='Khmer Os System' data-f-sz='9' data-f-bold='true'>" + colValue + "</th>";
+                    else if (th_td == "td")
+                        returnCol = "<td data-a-v='center' data-a-h='center' class='text-center' data-f-name='Khmer Os System' data-f-sz='9'>" + (colValue == null ? "" : colValue) + "</td>";
+                    else if (th_td == "td_x")
+                        returnCol = "<td data-a-v='center' data-a-h='center' data-f-name='Khmer Os System' data-f-sz='9' data-f-strike='true' class='text-center'><del>" + (colValue == null ? "" : colValue) + "</del></td>";
+                    break;
+                case "qty":
+                case "unitPrice":
+                case "amount":
+                case "netValue":
+                case "costValue":
+                case "profit":                
+                    if (th_td == "th")
+                        returnCol = "<th data-a-v='center' data-a-h='right' class='text-right' data-fill-color='ffeaa7' data-f-name='Khmer Os System' data-f-sz='9' data-f-bold='true'>" + colValue + "</th>";
+                    else if (th_td == "td")
+                        returnCol = "<td data-a-v='center' data-a-h='right' class='text-right' data-f-name='Khmer Os System' data-f-sz='9'>" + (colValue == null ? "" : colValue.fm()) + "</td>";
+                    else if (th_td == "td_x")
+                        returnCol = "<td data-a-v='center' data-a-h='right' data-f-name='Khmer Os System' data-f-sz='9' data-f-strike='true' class='text-right'><del>" + (colValue == null ? "" : colValue.fm()) + "</del></td>";
+                    break;
+                default:
+                    break;
+            }
+            return returnCol;
+        }
+
+
+    </script>
+</body>
+</html>
+
+
+
